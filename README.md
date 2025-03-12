@@ -5,4 +5,4 @@
   - Jose Sanchez: C.I: 30.958.324
   - Luis Pena: C.I: 30512332
 
-- **Sección**: 305C2
+- **Seccion**: 305C2
