@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import condicion
 
 class MetodoPotencia:
     def __init__(self, matriz, max_iter=300, tolerancia=1e-8):
@@ -65,3 +66,15 @@ class MetodoPotencia:
 
         plt.tight_layout()
         plt.show()
+
+def main():
+    matriz = condicion.NumeroCondicion(4).generar_matriz_aleatoria()
+    metodo_potencia = MetodoPotencia(matriz)
+
+    autovalor, autovector = metodo_potencia.calcular()
+    print("\nAutovalor dominante calculado:", autovalor)
+    print("Autovector asociado:\n", autovector)
+
+    # Graficar la convergencia
+    metodo_potencia.graficar_convergencia()
+    

@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import condicion
 
 class MetodoPotenciaInverso:
     def __init__(self, matriz, max_iter=300, tolerancia=1e-8):
@@ -10,10 +11,10 @@ class MetodoPotenciaInverso:
         self.max_iter = max_iter
         self.tolerancia = tolerancia
         self.n = matriz.shape[0]
-        self.vector_actual = np.random.randint(-5, 6, size=self.n)  # Vector inicial aleatorio
+        self.vector_actual = np.random.randint(-5, 6, size=self.n)
         print("Vector inicial utilizado:\n", self.vector_actual)
-        self.vector_actual = self.vector_actual / np.linalg.norm(self.vector_actual, ord=np.inf)  # Normalización
-        self.autovalores_hist = []  # Historial de autovalores
+        self.vector_actual = self.vector_actual / np.linalg.norm(self.vector_actual, ord=np.inf)
+        self.autovalores_hist = []
 
     def calcular_autovalor(self):
         """
@@ -21,7 +22,7 @@ class MetodoPotenciaInverso:
         """
         for i in range(self.max_iter):
             try:
-                nuevo_vector = np.linalg.solve(self.matriz, self.vector_actual)  # Resolver sistema lineal
+                nuevo_vector = np.linalg.solve(self.matriz, self.vector_actual)
             except np.linalg.LinAlgError:
                 print("Error: La matriz es singular o no se puede resolver el sistema lineal.")
                 return None, None
@@ -30,16 +31,16 @@ class MetodoPotenciaInverso:
             u = np.dot(self.vector_actual, nuevo_vector)
             u_normalizado = u / (self.vector_actual @ self.vector_actual)
 
-            if abs(u_normalizado) < 1e-10:  # Evitar división por cero
+            if abs(u_normalizado) < 1e-10:
                 print("Error: División por cero en el cálculo del autovalor.")
                 return None, None
 
             autovalor_aprox = 1 / u_normalizado
-            self.autovalores_hist.append(autovalor_aprox)  # Guardar autovalor en el historial
+            self.autovalores_hist.append(autovalor_aprox)
 
             # Normalizar el nuevo vector
             norma_nuevo = np.linalg.norm(nuevo_vector, ord=np.inf)
-            if norma_nuevo == 0:  # Evitar vector nulo
+            if norma_nuevo == 0:
                 print("Error: Vector nulo después de la normalización.")
                 return None, None
 
@@ -66,3 +67,14 @@ class MetodoPotenciaInverso:
         plt.grid()
         plt.legend()
         plt.show()
+        
+def main():
+    matriz =  condicion.NumeroCondicion(4).generar_matriz_aleatoria()
+    metodo = MetodoPotenciaInverso(matriz)
+
+    autovalor, autovector = metodo.calcular_autovalor()
+
+    print(f"Autovalor aproximado: {autovalor}")
+    print(f"Autovector asociado:\n{autovector}")
+
+    metodo.graficar_convergencia()

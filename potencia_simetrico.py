@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import condicion
 
 class MetodoPotenciaSimetrico:
     def __init__(self, matriz, max_iter=300, tolerancia=1e-8):
@@ -31,41 +32,24 @@ class MetodoPotenciaSimetrico:
                     break
         return autovalor_aprox, self.vector_actual
 
-def main():
-    n = int(input("Ingrese tamaño de la matriz (n): "))
-    matriz = np.random.randint(-20, 20, size=(n, n))
-    #matriz = np.array([[1, 3, 0], [4, 7, 2], [3, 4, 2]]) # det0
-    print("Matriz utilizada:\n", matriz)
-    A = (matriz + matriz.T)/2
-    print("Matriz simetrica:\n", A)
-    
-    potencia = MetodoPotenciaSimetrico(A)
-    autovalor, autovector = potencia.calcular()
-
-    print("\nAutovalor dominante calculado:", autovalor)
-    print("Autovector asociado:", autovector)
-    
-    # Gráfico MetodoPotencia
-    def plot_time():
-        plt.figure(figsize=(12,5))
+    def graficar_convergencia(self):
+        plt.figure(figsize=(12, 5))
         
-        # Gráfico autovalor
-        # Convergencia del autovalor
-        plt.subplot(1,2,1)
-        plt.plot(potencia.autovalor_hist, 'o-', markersize=4)
+        # Gráfico del autovalor
+        plt.subplot(1, 2, 1)
+        plt.plot(self.autovalor_hist, 'o-', markersize=4)
         plt.title("Convergencia del Autovalor")
         plt.xlabel('N Iteración')
         plt.ylabel("Valor del Autovalor")
         plt.grid(True)
         
-        # Gráfico del autovector
-        # Convergencia de las componentes del autovector
+        # Gráfico de las diferencias del autovector
         diferencias = []
-        for i in range(1, len(potencia.autovector_hist)):
-            dif = np.linalg.norm(potencia.autovector_hist[i] - potencia.autovector_hist[i-1])
+        for i in range(1, len(self.autovector_hist)):
+            dif = np.linalg.norm(self.autovector_hist[i] - self.autovector_hist[i-1])
             diferencias.append(dif)
         
-        plt.subplot(1,2,2)
+        plt.subplot(1, 2, 2)
         plt.plot(diferencias, 'ro--', markersize=4)
         plt.title("Cambios en el Autovector")
         plt.xlabel('N Iteración')
@@ -74,7 +58,17 @@ def main():
         
         plt.tight_layout()
         plt.show()
-    plot_time()
 
-if __name__ == "__main__":
-    main()
+def main():
+    matriz = condicion.NumeroCondicion(4).generar_matriz_aleatoria()
+    A = (matriz + matriz.T) / 2
+    
+    potencia = MetodoPotenciaSimetrico(A)
+    autovalor, autovector = potencia.calcular()
+
+    print("\nAutovalor dominante calculado:", autovalor)
+    print("Autovector asociado:", autovector)
+    
+    # Graficar la convergencia
+    potencia.graficar_convergencia()
+    
